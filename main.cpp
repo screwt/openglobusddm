@@ -1,7 +1,14 @@
-#include "clipp.h"
 #include <iostream>
+
+#ifdef _WIN32
+#include <direct.h>
+#define mkdir(dir, mode) _mkdir(dir)
+#endif
+
+#include "clipp.h"
 #include "HgtFormat.h"
 #include "HgtFilesGrid.h"
+
 
 
 using namespace clipp;
@@ -214,14 +221,14 @@ int main(int argc, char* argv[]){
 					std::string zoomDir(outputdir);
                     sprintf(ccn, "%d", zoom);
 					zoomDir.append(ccn);
-					_mkdir(zoomDir.c_str());
+					mkdir(zoomDir.c_str());
 
                     sprintf(ccn, "%d", qm);
-					_mkdir(zoomDir.append("\\").append(ccn).c_str());
+					mkdir(zoomDir.append("\\").append(ccn).c_str());
 
 					std::string fileName(zoomDir);
 					fileName.append("\\");
-                    sprintf(ccn, "%d", qn;                        
+                    sprintf(ccn, "%d", qn);                        
 					fileName.append(ccn).append(".ddm");
 
 					std::cout << "droping: " << fileName << "\n";
