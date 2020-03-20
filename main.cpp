@@ -65,23 +65,23 @@ int main(int argc, char* argv[]){
 
 	auto cli = (
 		required("-o", "--outputdir").doc("output directory root") \
-		    & value("outputdir", outputdir),
+		& value("outputdir", outputdir),
 		required("-i", "--inputdir").doc("input directory containing hgt files from \
 			http://www.viewfinderpanoramas.org/Coverage%20map%20viewfinderpanoramas_org3.htm") \
-		    & value("inputdir", inputdir),
+		& value("inputdir", inputdir),
 		option("-z", "--zoomlevel").doc("target zoom level") \
-		    & value("zoom", zoom),
+		& value("zoom", zoom),
 		option("-s", "--start").doc("Start lon lat coordonates") \
-		    & value("lon", topleftlon) & value("lat", topleftlat),
+		& value("lon", topleftlon) & value("lat", topleftlat),
 		option("-e", "--end").doc("End lon lat coordonates") \
 		& value("lon", bottomrightlon) & value("lat", bottomrightlat)
-	);
+		);
 
 	if (!parse(argc, argv, cli)) {
 		std::cout << make_man_page(cli, argv[0]);
 		return 0;
 	}
-	
+
 	std::cout << "zoom: " << zoom << "\n";
 	std::cout << "topleftlonlat: " << topleftlon << "|" << topleftlat << "\n";
 	std::cout << "bottomrightlonlat: " << bottomrightlon << "|" << bottomrightlat << "\n";
@@ -94,8 +94,7 @@ int main(int argc, char* argv[]){
 	int quadsCount = pow(2, zoom); //(dstFieldSize - 1) / 32;
 	const int dstFieldSize = quadsCount * (quadSize - 1) + 1;//524289;// = 2^19 + 1 > 1201 * 360 - (360 - 1)
 	incLat_merc = incLon_merc = 2.0 * POLE / (vec_t)(dstFieldSize - 1);
-	//coordi = POLE - ((quadSize - 1) * qm + i) * incLat_merc;
-	//coordj = (-1) * POLE + ((quadSize - 1) * qn + j) * incLon_merc;
+
 	int qm_start_in_grid = (POLE - qm_start) / (incLat_merc * (quadSize - 1));
 	int qm_end_in_grid = (POLE - qm_end) / (incLat_merc * (quadSize - 1));
 	int qn_start_in_grid = (qn_start - POLE) / (incLon_merc * (quadSize - 1));
@@ -104,12 +103,10 @@ int main(int argc, char* argv[]){
 	std::cout << "qm_start_in_grid: " << qm_start_in_grid << "<->" << qm_end_in_grid << "\n";
 	std::cout << "qn_start_in_grid: " << qn_start_in_grid << "<->" << qn_end_in_grid << "\n";
 
-	HgtFilesGrid demGrid;
-	//LogAll("DEM files grid is creating...\n");
-	demGrid.Init(4, inputdir.c_str());
-	//LogAll("DEM files grid created.\n");
-	//LogAll("Preparing adaptation parameters...\n");
-
+	HgtFilesGrid* demGrid = new HgtFilesGrid();
+	
+	demGrid->Init(4, inputdir.c_str());
+	
 	HgtFormat srcHgtFormat(1201, 1201, 1.0 / 1200.0);// 3 / 3600 == 1 / ( 1201 - 1 ) deg.
 	HgtFormat srcField(srcHgtFormat.nrows * 180 - (180 - 1), srcHgtFormat.ncols * 360 - (360 - 1));
 	HgtFormat dstField(dstFieldSize, dstFieldSize);
@@ -127,7 +124,7 @@ int main(int argc, char* argv[]){
 	double coordi = 0, coordj = 0;
 
 	for (int qm = 0; qm < quadsCount; qm++) {
-		
+
 		if (qm >= qm_start_in_grid && qm <= qm_end_in_grid) {
 			std::cout << qm << "/" << quadsCount << "\n";
 			for (int qn = 0; qn < quadsCount; qn++)
@@ -145,7 +142,7 @@ int main(int argc, char* argv[]){
 						//int test = 100000 % (i+1);
 						//std::cout << "    " << test << "\n";
 						if (qn == 0 && i == 0 && j == 0 ||
-							qn == quadsCount-1 && i == quadSize-1 && j == quadSize-1
+							qn == quadsCount - 1 && i == quadSize - 1 && j == quadSize - 1
 							) {
 							std::cout << "    lon: " << lon_d << " lat: " << lat_d << "\n";
 						}
@@ -160,9 +157,9 @@ int main(int argc, char* argv[]){
 						int i00 = 1200 - 1 - indLat;
 						int j00 = (int)floor(onedlon / srcHgtFormat.cellsize);
 
-						vec_t h00 = demGrid.GetHeight(demFileIndex_i, demFileIndex_j, i00, j00);
-						vec_t h01 = demGrid.GetHeight(demFileIndex_i, demFileIndex_j, i00, j00 + 1);
-						vec_t h10 = demGrid.GetHeight(demFileIndex_i, demFileIndex_j, i00 + 1, j00);
+						vec_t h00 = demGrid->GetHeight(demFileIndex_i, demFileIndex_j, i00, j00);
+						vec_t h01 = demGrid->GetHeight(demFileIndex_i, demFileIndex_j, i00, j00 + 1);
+						vec_t h10 = demGrid->GetHeight(demFileIndex_i, demFileIndex_j, i00 + 1, j00);
 
 						vec_t cornerLat = 90 - demFileIndex_i;
 						vec_t cornerLon = -180 + demFileIndex_j;
@@ -191,7 +188,7 @@ int main(int argc, char* argv[]){
 
 						if (edge < 0.0)
 						{
-							h11 = demGrid.GetHeight(demFileIndex_i, demFileIndex_j, i00 + 1, j00 + 1);
+							h11 = demGrid->GetHeight(demFileIndex_i, demFileIndex_j, i00 + 1, j00 + 1);
 
 							vecSet(tr[0],
 								cornerLon + (j00 + 1) * srcHgtFormat.cellsize,
@@ -213,7 +210,7 @@ int main(int argc, char* argv[]){
 					}
 				}
 
-				
+
 				if (!isZeroHeight) {
 					//std::cout << "    isZeroHeight : " << isZeroHeight << "\n";
 					//std::cout << qm << "\n";
@@ -221,22 +218,23 @@ int main(int argc, char* argv[]){
 					FILE* fp;
 
 					std::string zoomDir(outputdir);
-                    sprintf(ccn, "%d", zoom);
+					sprintf(ccn, "%d", zoom);
 					zoomDir.append(ccn);
+
 					mkdir(zoomDir.c_str(), S_IRWXU);
 
-                    sprintf(ccn, "%d", qm);
+					sprintf(ccn, "%d", qm);
 					mkdir(zoomDir.append("\\").append(ccn).c_str(), S_IRWXU);
 
 					std::string fileName(zoomDir);
 					fileName.append("\\");
-                    sprintf(ccn, "%d", qn);                        
+					sprintf(ccn, "%d", qn);
 					fileName.append(ccn).append(".ddm");
 
 					std::cout << "droping: " << fileName << "\n";
-                    fp = fopen(fileName.c_str(), "wb");
-                    
-					if (fp != NULL) {
+					fp = fopen(fileName.c_str(), "wb");
+
+					if (fp == NULL) {
 						//LogAll(std::string("Error: ").append(fileName).append("\n").c_str());
 						return 1;
 					}

@@ -34,7 +34,7 @@ void HgtFilesGrid::Init( int maxLoadedFiles, const char* filesPath )
 			fileName.append(HgtFormat::crdtodem(90 - i, -180 + j, demFileName));
             fp = fopen(fileName.c_str(), "rb");
             
-			if( fp != NULL ) {
+			if( fp == NULL ) {
 				
 				this->hgtFilesGrid[i][j].fileName = NULL;
 			} else {
@@ -75,7 +75,7 @@ signed short HgtFilesGrid::GetHeight( int iSquare, int jSquare, int i, int j )
 		if( this->hgtFilesGrid[iSquare][jSquare].fileName ) {
 			FILE *fp;
             fp = fopen(this->hgtFilesGrid[iSquare][jSquare].fileName, "rb+");
-			if( fp != NULL ) {
+			if( fp == NULL ) {
 				return 0;
 			}
 

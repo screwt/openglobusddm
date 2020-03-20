@@ -60,7 +60,7 @@ struct HgtFormat {
 			ll = (int)ceil(abs(lon));
 		}
 		
-		sprintf(slt, "%d", lt);
+		sprintf(sll, "%d", ll);
 
 		int len = strlen(sll);
 		if(  len != 3){
