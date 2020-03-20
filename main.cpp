@@ -78,11 +78,11 @@ int main(int argc, char* argv[]){
 	if (!parse(argc, argv, cli)) {
 		std::cout << make_man_page(cli, argv[0])\
 			.prepend_section("DESCRIPTION", 
-				"    This tools generates ddm file for openglobus.org\n"
-				"    It needs data from http://www.viewfinderpanoramas."
-				"org/Coverage%20map%20viewfinderpanoramas_org3.htm\n"
-				"it is based on the fallowing project: https://github.c"
-				"om/openglobus/tools/tree/master/HeightsAdapter"
+                "    This tools generates ddm file for openglobus.org \n"
+				"    It needs data from  \n"
+				"    - http://www.viewfinderpanoramas.org/Coverage%20map%20viewfinderpanoramas_org3.htm\n"
+				"    it is based on the fallowing project: \n"
+				"    - https://github.com/openglobus/tools/tree/master/HeightsAdapter"
 			    "");
 		return 0;
 	}
