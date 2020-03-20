@@ -3,7 +3,6 @@
 #ifdef _WIN32
 #include <direct.h>
 #define mkdir(dir, mode) _mkdir(dir)
-#define fopen(fileName, mode) fopen_s(fp, fileName, mode)
 #endif
 
 #include <sys/types.h>
