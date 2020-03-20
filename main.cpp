@@ -81,6 +81,8 @@ int main(int argc, char* argv[]){
 				"    This tools generates ddm file for openglobus.org\n"
 				"    It needs data from http://www.viewfinderpanoramas."
 				"org/Coverage%20map%20viewfinderpanoramas_org3.htm\n"
+				"it is based on the fallowing project: https://github.c"
+				"om/openglobus/tools/tree/master/HeightsAdapter"
 			    "");
 		return 0;
 	}
