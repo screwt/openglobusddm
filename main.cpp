@@ -1,11 +1,7 @@
-#include "clipp.h";
-//#include <conio.h>
+#include "clipp.h"
 #include <iostream>
-#include <io.h>
-#include <direct.h>
 #include "HgtFormat.h"
-#include "log.h";
-#include "HgtFilesGrid.h";
+#include "HgtFilesGrid.h"
 
 
 using namespace clipp;
@@ -14,31 +10,28 @@ const double PI = 3.141592653589793238462;
 const double POLE = 20037508.34;
 
 vec_t getHeightFromGrid(HgtFilesGrid& grid, const HgtFormat& format, int i, int j) {
-	int demFileIndex_i = (int)floor((double)i / (double)(format.nrows - 1));
-	int demFileIndex_j = (int)floor((double)j / (double)(format.ncols - 1));
-
-	int i00 = i + demFileIndex_i - format.nrows * demFileIndex_i;
-	int j00 = j + demFileIndex_j - format.ncols * demFileIndex_j;
-
-	vec_t h = grid.GetHeight(demFileIndex_i, demFileIndex_j, i00, j00);
-
-	return h;
+    int demFileIndex_i = (int)floor((double)i / (double)(format.nrows - 1));
+    int demFileIndex_j = (int)floor((double)j / (double)(format.ncols - 1));
+    int i00 = i + demFileIndex_i - format.nrows * demFileIndex_i;
+    int j00 = j + demFileIndex_j - format.ncols * demFileIndex_j;
+    vec_t h = grid.GetHeight(demFileIndex_i, demFileIndex_j, i00, j00);
+    return h;
 }
 
 double Merc2Lon(double x) {
-	return 180.0 * x / POLE;
+    return 180.0 * x / POLE;
 }
 
 double Merc2Lat(double y) {
-	return 180.0 / PI * (2 * atan(exp((y / POLE) * PI)) - PI / 2);
+    return 180.0 / PI * (2 * atan(exp((y / POLE) * PI)) - PI / 2);
 }
 
 double Lon2Merc(double lon) {
-	return lon * POLE / 180.0;
+    return lon * POLE / 180.0;
 }
 
 double Lat2Merc(double lat) {
-	return log(tan((90.0 + lat) * PI / 360.0)) / PI * POLE;
+    return log(tan((90.0 + lat) * PI / 360.0)) / PI * POLE;
 }
 
 
@@ -49,8 +42,7 @@ double DegTail(double deg) {
 	return (-1)*floor(deg) + deg;
 }
 
-void main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]){
 	std::string outputdir;
 	std::string inputdir;
 	int zoom = 11;
@@ -61,7 +53,6 @@ void main(int argc, char* argv[])
 	float bottomrightlat = 0;
 	std::vector<float> bottomrightlonlat{180, 0};
 	vec_t incLat_merc, incLon_merc;
-
 
 	auto cli = (
 		required("-o", "--outputdir").doc("output directory root") \
@@ -79,7 +70,7 @@ void main(int argc, char* argv[])
 
 	if (!parse(argc, argv, cli)) {
 		std::cout << make_man_page(cli, argv[0]);
-		return;
+		return 0;
 	}
 	
 	std::cout << "zoom: " << zoom << "\n";
@@ -105,10 +96,10 @@ void main(int argc, char* argv[])
 	std::cout << "qn_start_in_grid: " << qn_start_in_grid << "<->" << qn_end_in_grid << "\n";
 
 	HgtFilesGrid demGrid;
-	LogAll("DEM files grid is creating...\n");
+	//LogAll("DEM files grid is creating...\n");
 	demGrid.Init(4, inputdir.c_str());
-	LogAll("DEM files grid created.\n");
-	LogAll("Preparing adaptation parameters...\n");
+	//LogAll("DEM files grid created.\n");
+	//LogAll("Preparing adaptation parameters...\n");
 
 	HgtFormat srcHgtFormat(1201, 1201, 1.0 / 1200.0);// 3 / 3600 == 1 / ( 1201 - 1 ) deg.
 	HgtFormat srcField(srcHgtFormat.nrows * 180 - (180 - 1), srcHgtFormat.ncols * 360 - (360 - 1));
@@ -121,7 +112,7 @@ void main(int argc, char* argv[])
 	vec3_t line[2];
 	vecSet(line[0], 0.0, 1000000.0, 0.0);
 	vecSet(line[1], 0.0, -1000000.0, 0.0);
-	LogAll("Adaptation prepared to proceed...\n");
+	//LogAll("Adaptation prepared to proceed...\n");
 
 	double lon_d = 0, lat_d = 0;
 	double coordi = 0, coordj = 0;
@@ -219,7 +210,6 @@ void main(int argc, char* argv[])
 					//std::cout << qm << "\n";
 					char ccn[10];
 					FILE* fp;
-					errno_t err;
 
 					std::string zoomDir(outputdir);
 					_itoa(zoom, ccn, 10);
@@ -234,12 +224,12 @@ void main(int argc, char* argv[])
 					fileName.append(_itoa(qn, ccn, 10)).append(".ddm");
 
 					std::cout << "droping: " << fileName << "\n";
-					if (err = fopen_s(&fp, fileName.c_str(), "wb") != 0) {
-						LogAll(std::string("Error: ").append(fileName).append("\n").c_str());
-						return;
+					if (fopen_s(&fp, fileName.c_str(), "wb") != 0) {
+						//LogAll(std::string("Error: ").append(fileName).append("\n").c_str());
+						return 1;
 					}
 					else {
-						LogAll(fileName.append("\n").c_str());
+						//LogAll(fileName.append("\n").c_str());
 					}
 
 					float* quadHeightData_fl = new float[quadSize2];
@@ -257,6 +247,6 @@ void main(int argc, char* argv[])
 	}
 
 	delete[] quadHeightData;
-
-	LogAll("Adaptaion successfully complete.\n");
+    return 0;    
 }
+

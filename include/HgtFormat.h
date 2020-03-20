@@ -40,6 +40,7 @@ struct HgtFormat {
 		}
 		_itoa_s(lt, slt, 10);
 
+
 		if( strlen(slt) != 2 ){
 			slt[1] = slt[0];
 			slt[0] = '0';
