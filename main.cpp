@@ -3,8 +3,11 @@
 #ifdef _WIN32
 #include <direct.h>
 #define mkdir(dir, mode) _mkdir(dir)
+#define fopen(fileName, mode) fopen_s(fp, fileName, mode)
 #endif
 
+#include <sys/types.h>
+#include <sys/stat.h>
 #include "clipp.h"
 #include "HgtFormat.h"
 #include "HgtFilesGrid.h"
@@ -221,10 +224,10 @@ int main(int argc, char* argv[]){
 					std::string zoomDir(outputdir);
                     sprintf(ccn, "%d", zoom);
 					zoomDir.append(ccn);
-					mkdir(zoomDir.c_str());
+					mkdir(zoomDir.c_str(), S_IRWXU);
 
                     sprintf(ccn, "%d", qm);
-					mkdir(zoomDir.append("\\").append(ccn).c_str());
+					mkdir(zoomDir.append("\\").append(ccn).c_str(), S_IRWXU);
 
 					std::string fileName(zoomDir);
 					fileName.append("\\");
@@ -232,7 +235,9 @@ int main(int argc, char* argv[]){
 					fileName.append(ccn).append(".ddm");
 
 					std::cout << "droping: " << fileName << "\n";
-					if (fopen_s(&fp, fileName.c_str(), "wb") != 0) {
+                    fp = fopen(fileName.c_str(), "wb");
+                    
+					if (fp != NULL) {
 						//LogAll(std::string("Error: ").append(fileName).append("\n").c_str());
 						return 1;
 					}

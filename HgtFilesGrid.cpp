@@ -29,18 +29,21 @@ void HgtFilesGrid::Init( int maxLoadedFiles, const char* filesPath )
 	for( int i = 0; i <= 180; i++ ){
 		for( int j = 0; j <= 360; j++ ){
 			FILE *fp;
-			errno_t err;
 			std::string fileName(filesPath);
 			char demFileName[12];
 			fileName.append(HgtFormat::crdtodem(90 - i, -180 + j, demFileName));
-			if( (err = fopen_s( &fp, fileName.c_str(), "rb")) != 0 ) {
+            fp = fopen(fileName.c_str(), "rb");
+            
+			if( fp != NULL ) {
 				
 				this->hgtFilesGrid[i][j].fileName = NULL;
 			} else {
 				std::cout << "loaded: " << fileName << "\n";
 				int length = fileName.length();
 				this->hgtFilesGrid[i][j].fileName = new char[length + 1];
-				strcpy_s( hgtFilesGrid[i][j].fileName, length + 1, fileName.c_str() );
+                strcpy(hgtFilesGrid[i][j].fileName, fileName.c_str());
+                
+				//strcpy_s( hgtFilesGrid[i][j].fileName, length + 1, fileName.c_str() );
 				fclose(fp);
 			}
 			this->hgtFilesGrid[i][j].pHeightData = NULL;
@@ -71,8 +74,8 @@ signed short HgtFilesGrid::GetHeight( int iSquare, int jSquare, int i, int j )
 	{
 		if( this->hgtFilesGrid[iSquare][jSquare].fileName ) {
 			FILE *fp;
-			errno_t err;
-			if( err = fopen_s( &fp, this->hgtFilesGrid[iSquare][jSquare].fileName, "rb+") != 0 ) {
+            fp = fopen(this->hgtFilesGrid[iSquare][jSquare].fileName, "rb+");
+			if( fp != NULL ) {
 				return 0;
 			}
 
