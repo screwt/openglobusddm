@@ -5,6 +5,7 @@
 #include <cmath>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 struct HgtFormat {
 	int ncols;
@@ -38,7 +39,8 @@ struct HgtFormat {
 			res[0] = 'S';
 			lt = (int)ceil(abs(lat));
 		}
-		_itoa_s(lt, slt, 10);
+		
+		sprintf(slt, "%d", lt);
 
 		if( strlen(slt) != 2 ){
 			slt[1] = slt[0];
@@ -56,7 +58,8 @@ struct HgtFormat {
 			res[3] = 'W';
 			ll = (int)ceil(abs(lon));
 		}
-		_itoa_s(ll, sll, 10);
+		
+		sprintf(slt, "%d", lt);
 
 		int len = strlen(sll);
 		if(  len != 3){
