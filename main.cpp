@@ -224,10 +224,10 @@ int main(int argc, char* argv[]){
 					mkdir(zoomDir.c_str(), S_IRWXU);
 
 					sprintf(ccn, "%d", qm);
-					mkdir(zoomDir.append("\\").append(ccn).c_str(), S_IRWXU);
+					mkdir(zoomDir.append("/").append(ccn).c_str(), S_IRWXU);
 
 					std::string fileName(zoomDir);
-					fileName.append("\\");
+					fileName.append("/");
 					sprintf(ccn, "%d", qn);
 					fileName.append(ccn).append(".ddm");
 
