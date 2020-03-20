@@ -212,16 +212,17 @@ int main(int argc, char* argv[]){
 					FILE* fp;
 
 					std::string zoomDir(outputdir);
-					_itoa(zoom, ccn, 10);
+                    sprintf(ccn, "%d", zoom);
 					zoomDir.append(ccn);
 					_mkdir(zoomDir.c_str());
 
-					_itoa(qm, ccn, 10);
+                    sprintf(ccn, "%d", qm);
 					_mkdir(zoomDir.append("\\").append(ccn).c_str());
 
 					std::string fileName(zoomDir);
 					fileName.append("\\");
-					fileName.append(_itoa(qn, ccn, 10)).append(".ddm");
+                    sprintf(ccn, "%d", qn;                        
+					fileName.append(ccn).append(".ddm");
 
 					std::cout << "droping: " << fileName << "\n";
 					if (fopen_s(&fp, fileName.c_str(), "wb") != 0) {
