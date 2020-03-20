@@ -1,5 +1,5 @@
 #include "clipp.h";
-#include <conio.h>
+//#include <conio.h>
 #include <iostream>
 #include <io.h>
 #include <direct.h>
