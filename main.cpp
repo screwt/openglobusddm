@@ -73,7 +73,7 @@ int main(int argc, char* argv[]){
 		& value("lon", topleftlon) & value("lat", topleftlat),
 		option("-e", "--end").doc("End lon lat coordonates") \
 		& value("lon", bottomrightlon) & value("lat", bottomrightlat),
-		option("-s", "--quadsize").doc("Quadsize resolution default 33") \
+		option("-x", "--quadsize").doc("Quadsize resolution default 33") \
 		& value("size", quadSize)
 		);
 
