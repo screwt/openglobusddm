@@ -27,9 +27,9 @@ Unzip all files in the same directory
 ```shell
 ./HeightAdapter -o /output/ -i /tmp/file_fome_viewfinderpanoramas/ -z 8 -s -5 51 -e 9 42
 ```
--z zoom level
--s lonlat starting point
--e lonlat ending point
+-z zoom level (exemple: 8)
+-s lonlat starting point (exemple: -5 51)
+-e lonlat ending point (exemple: 9 42)
 -x quadsize (resolution) default: 33
 
 # INFO
